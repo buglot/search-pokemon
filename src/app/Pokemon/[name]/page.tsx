@@ -35,7 +35,7 @@ export default async function PokemonPage({ params }: { params: Promise<{ name: 
       <div className="w-full p-3 flex flex-col items-center">
         <Link href={"/"} className=" text-gray-400 hover:underline">Back to home page</Link>
         <h1 className="text-3xl font-bold">{pokemon.name}</h1>
-        <Image src={pokemon.image} alt={pokemon.name} className="w-48 h-48 my-4" />
+        <Image src={pokemon.image} width={100} height={100} alt={pokemon.name} className="w-48 h-48 my-4" />
         <p>Type: {pokemon.types.join(", ")}</p>
         <p>maxHP: {pokemon.maxHP}</p>
         <p>maxCP: {pokemon.maxCP}</p>
