@@ -14,7 +14,7 @@ export default function PokemonSearchInput() {
 
     return (
         <form className="w-full flex justify-center" onSubmit={handleSubmit}>
-            <input ref={name} className="p-2 w-3/4 md:w-1/4 bg-white text-black rounded-xl" placeholder="Pokemon name..." required />
+            <input ref={name} className="p-2 w-3/4 md:w-1/4 bg-white text-black rounded-xl" placeholder="Pokemon name... Enter of searching" required />
         </form>
     );
 }

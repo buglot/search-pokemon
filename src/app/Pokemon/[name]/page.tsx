@@ -11,13 +11,16 @@ export async function generateStaticParams() {
   return names.map((name) => ({ name }));
 }
 export async function generateMetadata({ params }: { params: { name: string } }) {
+  const resolvedParams =await params;
+  const name =await resolvedParams.name;
   return {
-    title: `Pokemon: ${params.name}`,
-    description: `View information about ${params.name} the Pokémon`,
+    title: `Pokemon: ${name}`,
+    description: `View information about ${name} the Pokémon`,
   };
 }
 export default async function PokemonPage({ params }: { params: { name: string } }) {
-  const name = params.name.toLowerCase();
+  const resolvedParams =await params;
+  const name =await resolvedParams.name;
   try {
     const { data } = await client.query<dataPokemon>({
       query: GET_POKEMON_NAME,
