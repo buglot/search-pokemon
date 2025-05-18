@@ -1,26 +1,25 @@
 import client from "@/app/lib/apolloClient";
 import { GET_POKEMON_NAME } from "@/app/lib/queryName";
 import { notFound } from "next/navigation";
-import { Pokemon } from "@/app/types/pokemon";
 import Link from "next/link";
 import { dataPokemon } from "@/app/types/queryType";
+import Image from "next/image";
+import { Attack } from "@/app/types/pokemon";
 export const dynamicParams = true;
 export const dynamic = "force-static";
 export async function generateStaticParams() {
   const names = ["pikachu", "bulbasaur", "charmander", "squirtle"];
   return names.map((name) => ({ name }));
 }
-export async function generateMetadata({ params }: { params: { name: string } }) {
-  const resolvedParams =await params;
-  const name =await resolvedParams.name;
+export async function generateMetadata({ params }: { params: Promise<{ name: string }> }) {
+  const { name } = await params;
   return {
     title: `Pokemon: ${name}`,
     description: `View information about ${name} the Pokémon`,
   };
 }
-export default async function PokemonPage({ params }: { params: { name: string } }) {
-  const resolvedParams =await params;
-  const name =await resolvedParams.name;
+export default async function PokemonPage({ params }: { params: Promise<{ name: string }> }) {
+  const { name } = await params;
   try {
     const { data } = await client.query<dataPokemon>({
       query: GET_POKEMON_NAME,
@@ -36,7 +35,7 @@ export default async function PokemonPage({ params }: { params: { name: string }
       <div className="w-full p-3 flex flex-col items-center">
         <Link href={"/"} className=" text-gray-400 hover:underline">Back to home page</Link>
         <h1 className="text-3xl font-bold">{pokemon.name}</h1>
-        <img src={pokemon.image} alt={pokemon.name} className="w-48 h-48 my-4" />
+        <Image src={pokemon.image} alt={pokemon.name} className="w-48 h-48 my-4" />
         <p>Type: {pokemon.types.join(", ")}</p>
         <p>maxHP: {pokemon.maxHP}</p>
         <p>maxCP: {pokemon.maxCP}</p>
@@ -46,7 +45,7 @@ export default async function PokemonPage({ params }: { params: { name: string }
         <div className="mt-4">
           <h2 className="text-xl font-semibold">Fast Attacks</h2>
           <ul className="list-disc list-inside">
-            {pokemon.attacks.fast.map((atk: any) => (
+            {pokemon.attacks.fast.map((atk: Attack) => (
               <li key={atk.name}>
                 {atk.name}, type: {atk.type}, Damage: {atk.damage}
               </li>
@@ -56,7 +55,7 @@ export default async function PokemonPage({ params }: { params: { name: string }
         <div className="mt-4">
           <h2 className="text-xl font-semibold">Special Attacks</h2>
           <ul className="list-disc list-inside">
-            {pokemon.attacks.special.map((atk: any) => (
+            {pokemon.attacks.special.map((atk: Attack) => (
               <li key={atk.name}>
                 {atk.name}, type: {atk.type}, Damage: {atk.damage}
               </li>
@@ -67,7 +66,7 @@ export default async function PokemonPage({ params }: { params: { name: string }
           <div className="mt-6">
             <h2 className="text-xl font-semibold">Evolutions</h2>
             <ul className="list-disc list-inside">
-              {pokemon.evolutions.map((evo: any) => (
+              {pokemon.evolutions.map((evo: { name: string, id: string }) => (
                 <li key={evo.id}>
                   <Link prefetch href={`/Pokemon/${evo.name.toLowerCase()}`} className="text-blue-600 hover:underline">
                     {evo.name}
